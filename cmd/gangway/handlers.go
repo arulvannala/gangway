@@ -186,8 +186,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Debugf("Got token!!")
-	//log.Debugf("id_token: %s", token.Extra("id_token"))
-	//log.Debugf("refresh_token: %s", token.RefreshToken)
+	log.Debugf("id_token: %s", token.Extra("id_token"))
+	log.Debugf("refresh_token: %s", token.RefreshToken)
 
 	session.Values["id_token"] = token.Extra("id_token")
 	session.Values["refresh_token"] = token.RefreshToken
@@ -227,11 +227,11 @@ func commandlineHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	refreshToken, ok := session.Values["refresh_token"].(string)
-	// if !ok {
-	// 	gangwayUserSession.Cleanup(w, r)
-	// 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-	// 	return
-	// }
+	if !ok {
+		gangwayUserSession.Cleanup(w, r)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 
 	jwtToken, err := oidc.ParseToken(idToken, cfg.ClientSecret)
 	if err != nil {
