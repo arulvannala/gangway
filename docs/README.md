@@ -54,10 +54,10 @@ It's also important to note that this guide does not include an Auth provider, t
 We will use the following components:
 
 - [gangway](https://github.com/heptiolabs/gangway): OIDC client application
-- [contour](https://github.com/heptio/contour): Kubernetes Ingress controller
-- [cert-manager](https://github.com/jetstack/cert-manager): Controller for managing TLS certificates with Let's Encrypt.
+- [contour](https://github.com/heptio/contour): Kubernetes Ingress controller (Optional) (NSX-T includes ingress controller)
+- [cert-manager](https://github.com/jetstack/cert-manager): Controller for managing TLS certificates with Let's Encrypt. (Optional)
 
-### Cert-Manager
+### Cert-Manager (Optional)
 
 Run:
 
@@ -97,7 +97,7 @@ spec:
 EOF
 ```
 
-### Contour
+### Contour (Optional)
 
 Run:
 
