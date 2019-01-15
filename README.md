@@ -42,8 +42,9 @@ A Makefile is provided for building tasks. The options are as follows
 
 Getting started is as simple as:
 ```
-$ go get github.com/heptiolabs/gangway
-$ cd $GOPATH/src/github.com/heptiolabs/gangway
+$ go get github.com/jigsheth57/gangway
+$ cd $GOPATH/src/github.com/jigsheth57/gangway
 $ make setup
 $ make
+$ make install
 ```

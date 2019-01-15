@@ -18,21 +18,21 @@ import (
 	"crypto/sha256"
 	"net/http"
 
-	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/pbkdf2"
+	"github.com/quasoft/memstore"
 )
 
 const salt = "MkmfuPNHnZBBivy0L0aW"
 
 // Session defines a Gangway session
 type Session struct {
-	Session *sessions.CookieStore
+	Session *memstore.MemStore
 }
 
 // New inits a Session with CookieStore
 func New(sessionSecurityKey string) *Session {
 	return &Session{
-		Session: sessions.NewCookieStore(generateSessionKeys(sessionSecurityKey)),
+		Session: memstore.NewMemStore(generateSessionKeys(sessionSecurityKey)),
 	}
 }
 

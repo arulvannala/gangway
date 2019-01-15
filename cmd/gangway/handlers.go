@@ -155,37 +155,49 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
+	log.Debugf("Inside callback")
 	ctx := context.WithValue(r.Context(), oauth2.HTTPClient, transportConfig.HTTPClient)
 
 	// verify the state string
 	state := r.URL.Query().Get("state")
 
+	log.Debugf("retrieve session")
 	session, err := gangwayUserSession.Session.Get(r, "gangway")
 	if err != nil {
+		log.Errorf("Got an error in callback_session: %s", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	log.Debugf("retrieve state")
 	if state != session.Values["state"] {
+		log.Errorf("Got an error in callback_state: %s", err)
 		http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 		return
 	}
 
 	// use the access code to retrieve a token
 	code := r.URL.Query().Get("code")
+	log.Debugf("exchange code")
 	token, err := o2token.Exchange(ctx, code)
 	if err != nil {
+		log.Errorf("Got an error in callback_token: %s", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	log.Debugf("Got token!!")
+	//log.Debugf("id_token: %s", token.Extra("id_token"))
+	//log.Debugf("refresh_token: %s", token.RefreshToken)
 
 	session.Values["id_token"] = token.Extra("id_token")
 	session.Values["refresh_token"] = token.RefreshToken
 	err = session.Save(r, w)
 	if err != nil {
+		log.Errorf("Got an error in callback_session_save: %s", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	log.Debugf("redirecting to commandline!")
 	http.Redirect(w, r, fmt.Sprintf("%s/commandline", cfg.HTTPPath), http.StatusSeeOther)
 }
 
@@ -215,11 +227,11 @@ func commandlineHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	refreshToken, ok := session.Values["refresh_token"].(string)
-	if !ok {
-		gangwayUserSession.Cleanup(w, r)
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
+	// if !ok {
+	// 	gangwayUserSession.Cleanup(w, r)
+	// 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	// 	return
+	// }
 
 	jwtToken, err := oidc.ParseToken(idToken, cfg.ClientSecret)
 	if err != nil {
@@ -233,6 +245,7 @@ func commandlineHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Could not parse Username claim", http.StatusInternalServerError)
 		return
 	}
+	log.Debugf("username: %s", username)
 	email := strings.Join([]string{username, cfg.ClusterName}, "@")
 	if cfg.EmailClaim != "" {
 		email, ok = claims[cfg.EmailClaim].(string)
@@ -242,6 +255,7 @@ func commandlineHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	log.Debugf("email: %s", email)
 
 	issuerURL, ok := claims["iss"].(string)
 	if !ok {
@@ -262,7 +276,7 @@ func commandlineHandler(w http.ResponseWriter, r *http.Request) {
 		ClusterCA:    string(caBytes),
 		HTTPPath:     cfg.HTTPPath,
 	}
-
+	log.Debugf("userInfo: %s", info)
 	generateKubeConfig("kubeconfig.tmpl", info)
 	serveTemplate("commandline.tmpl", info, w)
 }
