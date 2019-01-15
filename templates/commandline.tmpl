@@ -64,7 +64,7 @@ kubectl config set-credentials {{ .Username }}  \
     --auth-provider-arg=client-secret={{ .ClientSecret }} \
     --auth-provider-arg=refresh-token={{ .RefreshToken }} \
     --auth-provider-arg=id-token={{ .IDToken }} \
-    --auth-provider-arg=idp-certificate-authority-data={{ .TrustedCA | base64enc }}
+    --auth-provider-arg=idp-certificate-authority-data={{ .TrustedCA  }}
 kubectl config set-context {{ .ClusterName }} --cluster={{ .ClusterName }} --user={{ .Username }}
 kubectl config use-context {{ .ClusterName }}
               </code>
