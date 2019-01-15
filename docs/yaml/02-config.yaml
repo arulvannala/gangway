@@ -78,7 +78,7 @@ data:
 
     # The path to a root CA to trust for self signed certificates at the Oauth2 URLs
     # Env var: GANGWAY_TRUSTED_CA_PATH
-    #trustedCAPath: /cacerts/rootca.crt
+    trustedCAPath: /cacerts/root_ca_certificate
 
     # The path gangway uses to create urls (defaults to "")
     # Env var: GANGWAY_HTTP_PATH

@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
         - name: gangway
-          image: gcr.io/heptio-images/gangway:v2.2.0
+          # image: gcr.io/heptio-images/gangway:v2.2.0
+          image: jigsheth57/gangway:v2.2.0
           imagePullPolicy: Always
           command: ["gangway", "-config", "/gangway/gangway.yaml"]
           env:
@@ -28,6 +29,8 @@ spec:
                 secretKeyRef:
                   name: gangway-key
                   key: sesssionkey
+            - name: LOG_LEVEL
+              value: debug
           ports:
             - name: http
               containerPort: 8080
@@ -42,6 +45,8 @@ spec:
           volumeMounts:
             - name: gangway
               mountPath: /gangway/
+            - name: cacerts
+              mountPath: /cacerts/
           livenessProbe:
             httpGet:
               path: /
@@ -61,3 +66,6 @@ spec:
         - name: gangway
           configMap:
             name: gangway
+        - name: cacerts
+          secret:
+            secretName: root-ca-certificate

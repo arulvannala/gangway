@@ -68,9 +68,15 @@ func serveTemplate(tmplFile string, data interface{}, w http.ResponseWriter) {
 		return
 	}
 
-	tmpl := template.New(tmplFile)
-	tmpl, _ = tmpl.Parse(string(templateData))
-	tmpl.ExecuteTemplate(w, tmplFile, data)
+	tmpl := template.New(tmplFile).Funcs(FuncMap())
+	tmpl, err = tmpl.Parse(string(templateData))
+	if err != nil {
+		log.Errorf("Error parsing commandline template: %s", err)
+	}
+	err = tmpl.ExecuteTemplate(w, tmplFile, data)
+	if err != nil {
+		log.Errorf("Error executing commandline template: %s", err)
+	}
 }
 
 func generateKubeConfig(tmplFile string, data interface{}) {
