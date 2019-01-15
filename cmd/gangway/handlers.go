@@ -50,6 +50,7 @@ type userInfo struct {
 	IssuerURL    string
 	APIServerURL string
 	ClusterCA    string
+	TrustedCA	 string
 	HTTPPath     string
 }
 
@@ -213,6 +214,21 @@ func commandlineHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	caBytes, err := ioutil.ReadAll(file)
 
+	// read in public trustedca.crt to output in commandline copy/paste commands
+	file, err = os.Open(cfg.TrustedCAPath)
+	if err != nil {
+		// let us know that we couldn't open the file. This only cause missing output
+		// does not impact actual function of program
+		log.Errorf("Failed to open TrustedCA file. %s", err)
+	}
+	defer file.Close()
+	trustedCABytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		// let us know that we couldn't open the file. This only cause missing output
+		// does not impact actual function of program
+		log.Errorf("Failed to read TrustedCA file. %s", err)
+	}
+
 	session, err := gangwayUserSession.Session.Get(r, "gangway")
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -274,6 +290,7 @@ func commandlineHandler(w http.ResponseWriter, r *http.Request) {
 		IssuerURL:    issuerURL,
 		APIServerURL: cfg.APIServerURL,
 		ClusterCA:    string(caBytes),
+		TrustedCA:    string(trustedCABytes),
 		HTTPPath:     cfg.HTTPPath,
 	}
 	log.Debugf("userInfo: %s", info)
