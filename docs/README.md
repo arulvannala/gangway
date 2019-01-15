@@ -24,8 +24,21 @@ kubectl -n gangway create secret generic gangway-key \
   --from-literal=sesssionkey=$(openssl rand -base64 32)
 ```
 
+## PKS UAA Configuration
+Update the default uaa client "pks_cluster_client"
+```
+$ uaac target https://${PKS_API_ENDPOINT}:8443 --skip-ssl-validation
+$ uaac token client get admin -s ${Pks Uaa Management Admin Client} OpsManager ==> PKS Tile (Credentials) ==> Pks Uaa Management Admin Client
+$ uaac client update pks_cluster_client --redirect_uri "http://${GANGWAY_REDIRECT_URL}/callback"
+$ uaac client update pks_cluster_client --authorized_grant_types "refresh_token","password","authorization_code","implicit"
+``` 
+Add self signed certificate of PKS UAA to cluster to be used by Gangway app.
+Download "root_ca_certificate" from opsmanager. i.e. OpsManager ==> User Profile ==> Settings ==> Advance ==> Download Root CA. https://${OpsManager}/download_root_ca_cert 
+```
+$ kubectl -n gangway create secret generic root-ca-certificate --from-file=./root_ca_certificate
+```
 ## Path Prefix
-
+ 
 Gangway takes an optional path prefix if you want to host it at a url other than '/' (e.g. `https://example.com/gangway`).
 By configuring this parameter, all redirects will have the proper path appended to the url parameters.
 
