@@ -28,7 +28,7 @@ import (
 	"text/template"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/heptiolabs/gangway/internal/oidc"
+	"github.com/jigsheth57/gangway/internal/oidc"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )

@@ -43,6 +43,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:811e64f5cdb278cd66f7615d425bc6804d292135d262a69a291e783ef2a049eb"
+  name = "github.com/heptiolabs/gangway"
+  packages = [
+    "internal/config",
+    "internal/session",
+  ]
+  pruneopts = ""
+  revision = "738f03bc9cac050fda55d013375aec3d95bcc473"
+
+[[projects]]
+  branch = "master"
   digest = "1:96fb2c226fc357520a1ffca919a2bb823a04a8c1047bccd8609b2eaf3ec582f7"
   name = "github.com/justinas/alice"
   packages = ["."]
@@ -56,6 +67,14 @@
   pruneopts = ""
   revision = "f611eb38b3875cc3bd991ca91c51d06446afa14c"
   version = "v1.3.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:a283f65c0eacf3d5428f71d8e2945736bb01194faf6a07fbc6a565649610afe0"
+  name = "github.com/quasoft/memstore"
+  packages = ["."]
+  pruneopts = ""
+  revision = "84a050167438e9a9344feb4d869289db0969b2fe"
 
 [[projects]]
   digest = "1:3ac248add5bb40a3c631c5334adcd09aa72d15af2768a5bc0274084ea7b2e5ba"
@@ -139,8 +158,11 @@
   input-imports = [
     "github.com/dgrijalva/jwt-go",
     "github.com/gorilla/sessions",
+    "github.com/heptiolabs/gangway/internal/config",
+    "github.com/heptiolabs/gangway/internal/session",
     "github.com/justinas/alice",
     "github.com/kelseyhightower/envconfig",
+    "github.com/quasoft/memstore",
     "github.com/sirupsen/logrus",
     "golang.org/x/crypto/pbkdf2",
     "golang.org/x/oauth2",
